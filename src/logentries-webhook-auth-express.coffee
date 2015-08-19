@@ -21,8 +21,9 @@ class LogentriesWebhookAuthExpress
     request.logentriesWebhookAuth.hash = hash
 
   _checkHash: (request, hash) =>
-    debug 'body', request[@options.bodyParam]
-    content_md5 = crypto.createHash('md5').update(request[@options.bodyParam]).digest('base64')
+    body = request[@options.bodyParam]?.toString()
+    debug 'body', body
+    content_md5 = crypto.createHash('md5').update(body).digest('base64')
     debug 'content_md5', content_md5
 
     canonical = [
