@@ -8,7 +8,8 @@ Express middleware for logentries webhook api
   var app = express();
 
   app.use(logentriesWebhookAuth(
-    password: 'some-preshared-key'
+    password: 'some-preshared-key',
+    bodyParam: 'rawBody'
   ));
   app.use(function (request, response) {
     response.json({uuid: request.logentriesWebhookAuth.user});
