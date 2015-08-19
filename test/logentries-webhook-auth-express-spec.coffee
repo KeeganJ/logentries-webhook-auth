@@ -15,7 +15,7 @@ describe 'LogentriesWebhookAuthExpress', ->
             'Content-Type': 'application/x-www-form-urlencoded'
             'Date': 'Tue, 18 Aug 2015 18:14:29 GMT'
             'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG'
-            authorization: 'LE greenish-yellow:f/5LqZYHUhtLFSARTBpj8ABEpPY='
+            authorization: 'LE greenish-yellow:+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
           body: 'abcdeft'
           path: '/somewhere'
 
@@ -23,7 +23,7 @@ describe 'LogentriesWebhookAuthExpress', ->
         @sut.getFromAuthorizationHeader(@request)
 
       it 'should set logentriesWebhookAuth on the request', ->
-        expect(@request.logentriesWebhookAuth).to.deep.equal user: 'greenish-yellow', hash: 'f/5LqZYHUhtLFSARTBpj8ABEpPY='
+        expect(@request.logentriesWebhookAuth).to.deep.equal user: 'greenish-yellow', hash: '+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
 
     describe 'with a different valid LE token', ->
       beforeEach ->
@@ -34,7 +34,7 @@ describe 'LogentriesWebhookAuthExpress', ->
             'Content-Type': 'application/x-www-form-urlencoded'
             'Date': 'Tue, 18 Aug 2015 18:14:29 GMT'
             'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG'
-            authorization: 'LE super-pink:85R13IRcPPcU6Zkx59IHyjiSQU4='
+            authorization: 'LE super-pink:uHvt/OOVkCqV58aFIDaPNsHZRtg='
           body: 'fobar'
           path: '/b0rked'
 
@@ -42,7 +42,7 @@ describe 'LogentriesWebhookAuthExpress', ->
         @sut.getFromAuthorizationHeader(@request)
 
       it 'should set logentriesWebhookAuth on the request', ->
-        expect(@request.logentriesWebhookAuth).to.deep.equal user: 'super-pink', hash: '85R13IRcPPcU6Zkx59IHyjiSQU4='
+        expect(@request.logentriesWebhookAuth).to.deep.equal user: 'super-pink', hash: 'uHvt/OOVkCqV58aFIDaPNsHZRtg='
 
     describe 'with a invalid LE token', ->
       beforeEach ->

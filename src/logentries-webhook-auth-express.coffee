@@ -36,10 +36,7 @@ class LogentriesWebhookAuthExpress
     ].join("\n")
     debug 'canonical', canonical
 
-    canonical_b64 = new Buffer(canonical).toString('base64')
-    debug 'canonical_b64', canonical_b64
-
-    signature = crypto.createHmac('sha1', @options.password).update(canonical_b64).digest('base64')
+    signature = crypto.createHmac('sha1', @options.password).update(canonical).digest('base64')
     debug 'signature', signature, hash
 
     return signature == hash
