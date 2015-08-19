@@ -1,8 +1,10 @@
 _ = require 'lodash'
 crypto = require 'crypto'
+debug = require 'debug'
 
 class LogentriesWebhookAuthExpress
   constructor: (@options={}, dependencies={}) ->
+    @options.bodyParam ?= 'body'
 
   getFromAuthorizationHeader: (request) =>
     return unless request.headers?
@@ -18,7 +20,10 @@ class LogentriesWebhookAuthExpress
     request.logentriesWebhookAuth.hash = hash
 
   _checkHash: (request, hash) =>
-    content_md5 = crypto.createHash('md5').update(request.body).digest('base64')
+    debug 'body', request[@options.bodyParam]
+    content_md5 = crypto.createHash('md5').update(request[@options.bodyParam]).digest('base64')
+    debug 'content_md5', content_md5
+
     canonical = [
       'POST'
       request.get('Content-Type')
@@ -27,9 +32,13 @@ class LogentriesWebhookAuthExpress
       request.path
       request.get('X-Le-Nonce')
     ].join("\n")
+    debug 'canonical', canonical
 
     canonical_b64 = new Buffer(canonical).toString('base64')
+    debug 'canonical_b64', canonical_b64
+
     signature = crypto.createHmac('sha1', @options.password).update(canonical_b64).digest('base64')
+    debug 'signature', signature, hash
 
     return signature == hash
 
