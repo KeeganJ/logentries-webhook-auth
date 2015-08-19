@@ -1,6 +1,6 @@
 _ = require 'lodash'
 crypto = require 'crypto'
-debug = require 'debug'
+debug = require('debug')('express-logentries-webhook-auth:logentries-webhook-auth-express')
 
 class LogentriesWebhookAuthExpress
   constructor: (@options={}, dependencies={}) ->
@@ -8,6 +8,7 @@ class LogentriesWebhookAuthExpress
 
   getFromAuthorizationHeader: (request) =>
     return unless request.headers?
+    debug 'Authorization', request.headers.authorization
     parts = request.headers.authorization?.split(' ')
     return unless parts? && parts[0]?.toLocaleUpperCase() == 'LE'
 
