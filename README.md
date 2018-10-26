@@ -1,18 +1,43 @@
-# Express Logentries Webhook Authentication Middleware
-Express middleware for logentries webhook api
+# Logentries Webhook Authentication Middleware for Express
 
-### Example:
+[![CircleCI](https://circleci.com/gh/KeeganJ/logentries-webhook-auth.svg?style=svg)](https://circleci.com/gh/KeeganJ/logentries-webhook-auth)
+
+Express middleware for logentries webhook api, written in typescript with types available.
+
+[Logentries documentation on webhooks](https://docs.logentries.com/docs/webhookalert#section-authentication)
+
+# Usage
+
 ```js
-  var express = require('express');
-  var logentriesWebhookAuth = require('express-logentries-webhook-auth');
-  var app = express();
+  const express = require('express');
+  const bodyParser = require('body-parser');
+  const logentriesWebhookAuth = require('logentries-webhook-auth');
+  
+  const app = express();
+
+  // We need the full raw (currently encrypted) body available.
+  app.use(bodyParser.raw());        
 
   app.use(logentriesWebhookAuth(
-    password: 'some-preshared-key',
-    bodyParam: 'rawBody'
+    // The password that you put in the logentries webhook.
+    password: 'some-preshared-key', 
+    // bodyParser.raw will put the data to 'body' by default.
+    bodyParam: 'body'               
   ));
-  app.use(function (request, response) {
-    response.json({uuid: request.logentriesWebhookAuth.user});
-  });
-  app.listen(3333);
+
+  // "user" is now available on request.logentriesWebhookAuth.user
+
+  // Your routes here
+
+  app.listen(3000);
 ```
+
+# Development
+
+- `npm install`   - Setup dependencies and build project
+- `npm run build` - Build source files manually
+- `npm test`      - Run tests
+
+## Environment Variables
+
+`ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING` : Enable logging from this middleware. For local development only, as this could log sensitive data.

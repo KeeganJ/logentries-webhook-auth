@@ -1,0 +1,21 @@
+package-cache: &package-cache
+  key: npm-cache-{{ checksum "package.json" }}-{{ checksum "package-lock.json" }}
+
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/logentries-webhook-auth
+    steps:
+      - checkout
+      - restore_cache:
+          <<: *package-cache
+      - run: npm install
+      - save_cache:
+          <<: *package-cache
+          paths:
+            - node_modules
+      - run: npm run build
+      - run: npm test
