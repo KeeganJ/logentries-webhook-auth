@@ -87,7 +87,7 @@ export class Authorizer {
 }
 
 function inspect(obj) {
-  util.inspect(obj, {
+  return util.inspect(obj, {
     depth: 100,
     colors: true
   })
