@@ -54,14 +54,29 @@ export class Authorizer {
     debugLog('request', inspect(request));
     debugLog('request[this.options.bodyParam]', inspect(request[this.options.bodyParam]));
 
-    const body = request[this.options.bodyParam] !== null
-      ? request[this.options.bodyParam].toString()
-      : undefined;
+    const body = request[this.options.bodyParam];
 
-    debugLog('body', inspect(body));
+    let bodyToEncode;
+    if (body === null) {
+      bodyToEncode = undefined;
+    }
+    else if (typeof body === 'object') {
+      bodyToEncode = JSON.stringify(body);
+    }
+    else if (typeof body === 'string') {
+      bodyToEncode = body;
+    }
+    else if (Buffer.isBuffer(body)) {
+      bodyToEncode = body.toString();
+    }
+    else {
+      throw new Error(`Unhandled 'body' type: ${typeof body}. Please use body parser middleware to parse the request body before it gets to this middleware.`);
+    }
+
+    debugLog('bodyToEncode', inspect(bodyToEncode));
 
     const bodyHash = crypto.createHash('md5');
-    bodyHash.update(body);
+    bodyHash.update(bodyToEncode);
     const content_md5 = bodyHash.digest('base64');
     debugLog('content_md5', content_md5);
 

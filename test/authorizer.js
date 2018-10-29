@@ -12,30 +12,70 @@ describe('LogentriesWebhookAuthExpress', function() {
 
     describe('with a valid LE token', function() {
 
-      beforeEach(function() {
-        this.sut = new Authorizer({password: 'pre-shared-key'});
-        this.next = sinon.spy();
+      describe(`when the body is a string`, function () {
 
-        this.request = {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
-            'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
-            authorization: 'LE greenish-yellow:+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
-          },
-          body: 'abcdeft',
-          path: '/somewhere'
-        };
+        beforeEach(function() {
+          this.sut = new Authorizer({password: 'pre-shared-key'});
+          this.next = sinon.spy();
 
-        this.request.get = this.makeFakeGet(this.request);
-        return this.sut.getFromAuthorizationHeader(this.request);
+          this.request = {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
+              'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
+              authorization: 'LE greenish-yellow:+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
+            },
+            body: 'abcdeft',
+            path: '/somewhere'
+          };
+
+          this.request.get = this.makeFakeGet(this.request);
+          return this.sut.getFromAuthorizationHeader(this.request);
+        });
+
+        it('should set logentriesWebhookAuth on the request', function() {
+          return expect(this.request.logentriesWebhookAuth).to.deep.equal({
+            user: 'greenish-yellow',
+            hash: '+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
+          });
+        });
+
       });
 
-      it('should set logentriesWebhookAuth on the request', function() {
-        return expect(this.request.logentriesWebhookAuth).to.deep.equal({
-          user: 'greenish-yellow',
-          hash: '+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
+      describe(`when the body is an object`, function () {
+
+        beforeEach(function() {
+          this.sut = new Authorizer({password: 'pre-shared-key'});
+          this.next = sinon.spy();
+
+          this.request = {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
+              'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
+              authorization: 'LE greenish-yellow:evLgXp13JNDum+WG0y0xHuqkjQ8='
+            },
+            body: {
+              hello: {
+                there: {
+                  objects: "string"
+                }
+              }
+            },
+            path: '/somewhere'
+          };
+
+          this.request.get = this.makeFakeGet(this.request);
+          return this.sut.getFromAuthorizationHeader(this.request);
         });
+
+        it('should set logentriesWebhookAuth on the request', function() {
+          return expect(this.request.logentriesWebhookAuth).to.deep.equal({
+            user: 'greenish-yellow',
+            hash: 'evLgXp13JNDum+WG0y0xHuqkjQ8='
+          });
+        });
+
       });
     });
 
