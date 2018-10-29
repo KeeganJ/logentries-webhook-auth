@@ -50,6 +50,8 @@ export class Authorizer {
   }
 
   _checkHash(request: ExpressRequest, hash: string) {
+    debugLog('this.options', inspect(this.options));
+    debugLog('request', inspect(request));
     debugLog('request[this.options.bodyParam]', inspect(request[this.options.bodyParam]));
 
     const body = request[this.options.bodyParam] !== null
