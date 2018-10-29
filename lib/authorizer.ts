@@ -1,5 +1,6 @@
 import * as crypto from 'crypto';
 import { AuthorizerOptions, ExpressRequest } from './interfaces';
+import { inspect } from 'util';
 
 const debugLog = process.env.ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING
   ? console.log
@@ -53,9 +54,11 @@ export class Authorizer {
       ? request[this.options.bodyParam].toString()
       : undefined;
 
-    debugLog('body', body);
+    debugLog('body', inspect(body));
 
-    const content_md5 = crypto.createHash('md5').update(body).digest('base64');
+    const bodyHash = crypto.createHash('md5');
+    bodyHash.update(body);
+    const content_md5 = bodyHash.digest('base64');
     debugLog('content_md5', content_md5);
 
     const canonical = [
@@ -69,12 +72,12 @@ export class Authorizer {
 
     debugLog('canonical', canonical);
 
-    const signature = crypto.createHmac('sha1', this.options.password)
-      .update(canonical)
-      .digest('base64');
-
+    const hmac = crypto.createHmac('sha1', this.options.password);
+    hmac.update(canonical)
+    const signature = hmac.digest('base64');
     debugLog('signature', signature, hash);
 
+    debugLog('signature === hash', signature === hash);
     return signature === hash;
   }
 }

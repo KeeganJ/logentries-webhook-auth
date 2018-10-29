@@ -15,7 +15,7 @@ describe('LogentriesWebhookAuthExpress', function() {
       beforeEach(function() {
         this.sut = new Authorizer({password: 'pre-shared-key'});
         this.next = sinon.spy();
-        
+
         this.request = {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -33,7 +33,7 @@ describe('LogentriesWebhookAuthExpress', function() {
 
       it('should set logentriesWebhookAuth on the request', function() {
         return expect(this.request.logentriesWebhookAuth).to.deep.equal({
-          user: 'greenish-yellow', 
+          user: 'greenish-yellow',
           hash: '+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
         });
       });
@@ -44,7 +44,7 @@ describe('LogentriesWebhookAuthExpress', function() {
       beforeEach(function() {
         this.sut = new Authorizer({password: 'shared-key-pre'});
         this.next = sinon.spy();
-        
+
         this.request = {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -62,18 +62,18 @@ describe('LogentriesWebhookAuthExpress', function() {
 
       it('should set logentriesWebhookAuth on the request', function() {
         expect(this.request.logentriesWebhookAuth).to.deep.equal({
-          user: 'super-pink', 
+          user: 'super-pink',
           hash: 'uHvt/OOVkCqV58aFIDaPNsHZRtg='
         });
       });
     });
 
     describe('with a invalid LE token', function() {
-      
+
       beforeEach(function() {
         this.sut = new Authorizer({password: 'shared'});
         this.next = sinon.spy();
-        
+
         this.request = {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -88,7 +88,7 @@ describe('LogentriesWebhookAuthExpress', function() {
         return this.sut.getFromAuthorizationHeader(this.request);
       });
 
-      it('should set logentriesWebhookAuth on the request', function() {
+      it('should not set logentriesWebhookAuth on the request', function() {
         expect(this.request.logentriesWebhookAuth).to.not.exist;
       });
     });
