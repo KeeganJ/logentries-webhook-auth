@@ -1,6 +1,6 @@
 {
   "name": "logentries-webhook-auth",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Express middleware for logentries webhook api",
   "main": "build/index.js",
   "scripts": {

@@ -51,26 +51,16 @@ export class Authorizer {
 
   _checkHash(request: ExpressRequest, hash: string) {
     debugLog('this.options', inspect(this.options));
-    debugLog('request', inspect(request));
     debugLog('request[this.options.bodyParam]', inspect(request[this.options.bodyParam]));
 
-    const body = request[this.options.bodyParam];
+    const bodyFromParam = request[this.options.bodyParam];
+    if (!bodyFromParam) {
+      throw new Error(`Error: bodyParam '${this.options.bodyParam} is '${bodyFromParam}', which can't be parsed`);
+    }
 
-    let bodyToEncode;
-    if (body === null) {
-      bodyToEncode = undefined;
-    }
-    else if (typeof body === 'object') {
-      bodyToEncode = JSON.stringify(body);
-    }
-    else if (typeof body === 'string') {
-      bodyToEncode = body;
-    }
-    else if (Buffer.isBuffer(body)) {
-      bodyToEncode = body.toString();
-    }
-    else {
-      throw new Error(`Unhandled 'body' type: ${typeof body}. Please use body parser middleware to parse the request body before it gets to this middleware.`);
+    const bodyToEncode = request[this.options.bodyParam].payload;
+    if (bodyToEncode === undefined || bodyToEncode === null) {
+      throw new Error(`Error: No payload property on the body object.`);
     }
 
     debugLog('bodyToEncode', inspect(bodyToEncode));
@@ -94,7 +84,7 @@ export class Authorizer {
     const hmac = crypto.createHmac('sha1', this.options.password);
     hmac.update(canonical)
     const signature = hmac.digest('base64');
-    debugLog('signature', signature, hash);
+    debugLog('signature', signature);
 
     debugLog('signature === hash', signature === hash);
     return signature === hash;

@@ -12,70 +12,32 @@ describe('LogentriesWebhookAuthExpress', function() {
 
     describe('with a valid LE token', function() {
 
-      describe(`when the body is a string`, function () {
+      beforeEach(function() {
+        this.sut = new Authorizer({password: 'pre-shared-key'});
+        this.next = sinon.spy();
 
-        beforeEach(function() {
-          this.sut = new Authorizer({password: 'pre-shared-key'});
-          this.next = sinon.spy();
+        this.request = {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
+            'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
+            authorization: 'LE greenish-yellow:+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
+          },
+          body: {
+            payload: 'abcdeft'
+          },
+          path: '/somewhere'
+        };
 
-          this.request = {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
-              'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
-              authorization: 'LE greenish-yellow:+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
-            },
-            body: 'abcdeft',
-            path: '/somewhere'
-          };
-
-          this.request.get = this.makeFakeGet(this.request);
-          return this.sut.getFromAuthorizationHeader(this.request);
-        });
-
-        it('should set logentriesWebhookAuth on the request', function() {
-          return expect(this.request.logentriesWebhookAuth).to.deep.equal({
-            user: 'greenish-yellow',
-            hash: '+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
-          });
-        });
-
+        this.request.get = this.makeFakeGet(this.request);
+        return this.sut.getFromAuthorizationHeader(this.request);
       });
 
-      describe(`when the body is an object`, function () {
-
-        beforeEach(function() {
-          this.sut = new Authorizer({password: 'pre-shared-key'});
-          this.next = sinon.spy();
-
-          this.request = {
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
-              'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
-              authorization: 'LE greenish-yellow:evLgXp13JNDum+WG0y0xHuqkjQ8='
-            },
-            body: {
-              hello: {
-                there: {
-                  objects: "string"
-                }
-              }
-            },
-            path: '/somewhere'
-          };
-
-          this.request.get = this.makeFakeGet(this.request);
-          return this.sut.getFromAuthorizationHeader(this.request);
+      it('should set logentriesWebhookAuth on the request', function() {
+        return expect(this.request.logentriesWebhookAuth).to.deep.equal({
+          user: 'greenish-yellow',
+          hash: '+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
         });
-
-        it('should set logentriesWebhookAuth on the request', function() {
-          return expect(this.request.logentriesWebhookAuth).to.deep.equal({
-            user: 'greenish-yellow',
-            hash: 'evLgXp13JNDum+WG0y0xHuqkjQ8='
-          });
-        });
-
       });
     });
 
@@ -92,7 +54,9 @@ describe('LogentriesWebhookAuthExpress', function() {
             'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
             authorization: 'LE super-pink:uHvt/OOVkCqV58aFIDaPNsHZRtg='
           },
-          body: 'fobar',
+          body: {
+            payload: 'fobar'
+          },
           path: '/b0rked'
         };
 
@@ -121,14 +85,17 @@ describe('LogentriesWebhookAuthExpress', function() {
             'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
             authorization: 'LE user:zpwaW5raXNoLBAD'
           },
-          body: 'totally haxxored'
+          body: {
+            payload: 'totally haxxored'
+          },
+          path: '/supersecretpasswords'
         };
 
         this.request.get = this.makeFakeGet(this.request);
         return this.sut.getFromAuthorizationHeader(this.request);
       });
 
-      it('should not set logentriesWebhookAuth on the request', function() {
+      it('should set logentriesWebhookAuth on the request', function() {
         expect(this.request.logentriesWebhookAuth).to.not.exist;
       });
     });
