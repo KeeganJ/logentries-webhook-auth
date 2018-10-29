@@ -1,6 +1,6 @@
 # Logentries Webhook Authentication Middleware for Express
 
-[![CircleCI](https://circleci.com/gh/KeeganJ/logentries-webhook-auth.svg?style=svg)](https://circleci.com/gh/KeeganJ/logentries-webhook-auth)
+[![CircleCI](https://circleci.com/gh/thirdiron/logentries-webhook-auth.svg?style=svg)](https://circleci.com/gh/thirdiron/logentries-webhook-auth)
 
 Express middleware for logentries webhook api, written in typescript with types available.
 
