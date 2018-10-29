@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 import { AuthorizerOptions, ExpressRequest } from './interfaces';
-import { inspect } from 'util';
+import * as util from 'util';
 
 const debugLog = process.env.ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING
   ? console.log
@@ -50,6 +50,8 @@ export class Authorizer {
   }
 
   _checkHash(request: ExpressRequest, hash: string) {
+    debugLog('request[this.options.bodyParam]', inspect(request[this.options.bodyParam]));
+
     const body = request[this.options.bodyParam] !== null
       ? request[this.options.bodyParam].toString()
       : undefined;
@@ -80,4 +82,11 @@ export class Authorizer {
     debugLog('signature === hash', signature === hash);
     return signature === hash;
   }
+}
+
+function inspect(obj) {
+  util.inspect(obj, {
+    depth: 100,
+    colors: true
+  })
 }
