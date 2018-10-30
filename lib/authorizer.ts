@@ -1,21 +1,21 @@
 import * as crypto from 'crypto';
-import { AuthorizerOptions, ExpressRequest } from './interfaces';
-import * as util from 'util';
+import { ExpressRequest } from './interfaces';
 
 const debugLog = process.env.ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING
   ? console.log
   : (message) => {};
 
 export class Authorizer {
-  options: AuthorizerOptions;
+  password: string;
 
-  constructor(options: AuthorizerOptions, dependencies?: any) {
+  constructor(password: string, dependencies?: any) {
     this.getFromAuthorizationHeader = this.getFromAuthorizationHeader.bind(this);
     this._checkHash = this._checkHash.bind(this);
-    if (options == null) { options = {}; }
-    this.options = options;
+
+    if (!password) throw new Error(`'password' is required for logentries webhook auth.`);
+    this.password = password;
+
     if (dependencies == null) { dependencies = {}; }
-    if (this.options.bodyParam == null) { this.options.bodyParam = 'body'; }
   }
 
   getFromAuthorizationHeader(request: ExpressRequest) {
@@ -51,8 +51,6 @@ export class Authorizer {
   }
 
   _checkHash(request: ExpressRequest, hash: string) {
-    debugLog('this.options', inspect(this.options));
-
     const canonical = [
       'POST',
       request.get('Content-Type'),
@@ -64,7 +62,7 @@ export class Authorizer {
 
     debugLog('canonical', canonical);
 
-    const hmac = crypto.createHmac('sha1', this.options.password);
+    const hmac = crypto.createHmac('sha1', this.password);
     hmac.update(canonical)
     const signature = hmac.digest('base64');
 
@@ -74,11 +72,4 @@ export class Authorizer {
 
     return signature === hash;
   }
-}
-
-function inspect(obj) {
-  return util.inspect(obj, {
-    depth: 100,
-    colors: true
-  })
 }

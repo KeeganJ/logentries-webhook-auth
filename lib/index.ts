@@ -1,15 +1,14 @@
 import { Authorizer } from './authorizer';
-import { AuthorizerOptions, ExpressRequest } from './interfaces';
+import { ExpressRequest } from './interfaces';
 
-export default function(options: AuthorizerOptions) {
-  const authorizer = new Authorizer(options);
+export default function(password: string) {
+  const authorizer = new Authorizer(password);
 
   const middleware = function(request: ExpressRequest, response: any, next) {
     authorizer.getFromAuthorizationHeader(request);
+    const auth = request.logentriesWebhookAuth;
 
-    const auth = request.logentriesWebhookAuth || {};
-
-    if (auth.user === null) {
+    if (!auth || !auth.user) {
       return response.status(401).end();
     }
 

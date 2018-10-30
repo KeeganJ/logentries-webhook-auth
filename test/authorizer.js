@@ -13,7 +13,7 @@ describe('LogentriesWebhookAuthExpress', function() {
     describe('with a valid LE token', function() {
 
       beforeEach(function() {
-        this.sut = new Authorizer({password: 'pre-shared-key'});
+        this.sut = new Authorizer('pre-shared-key');
         this.next = sinon.spy();
 
         this.request = {
@@ -42,7 +42,7 @@ describe('LogentriesWebhookAuthExpress', function() {
     describe('with a different valid LE token', function() {
 
       beforeEach(function() {
-        this.sut = new Authorizer({password: 'shared-key-pre'});
+        this.sut = new Authorizer('shared-key-pre');
         this.next = sinon.spy();
 
         this.request = {
@@ -71,7 +71,7 @@ describe('LogentriesWebhookAuthExpress', function() {
     describe('with a invalid LE token', function() {
 
       beforeEach(function() {
-        this.sut = new Authorizer({password: 'shared'});
+        this.sut = new Authorizer('shared');
         this.next = sinon.spy();
 
         this.request = {

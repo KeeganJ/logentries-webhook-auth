@@ -10,24 +10,24 @@ Express middleware for logentries webhook api, written in typescript with types 
 
 ```js
   const express = require('express');
-  const bodyParser = require('body-parser');
+  const bodyParser = require('body-parser');  // Optional.
   const logentriesWebhookAuth = require('logentries-webhook-auth');
   
   const app = express();
 
-  // We need the full raw (currently encrypted) body available.
-  app.use(bodyParser.raw());        
+  // This step isn't necessary for authentication, but you'll want it 
+  // if you want to parse the payload that LogEntries posts.
+  app.use(bodyParser.urlencoded({
+    extended: true
+  }));
 
-  app.use(logentriesWebhookAuth(
-    // The password that you put in the logentries webhook.
-    password: 'some-preshared-key', 
-    // bodyParser.raw will put the data to 'body' by default.
-    bodyParam: 'body'               
-  ));
+  // Use the middleware with a pre shared password.
+  app.use(logentriesWebhookAuth('password'));
 
   // "user" is now available on request.logentriesWebhookAuth.user
+  // "payload" is now available on request.body
 
-  // Your routes here
+  // ...Your routes here...
 
   app.listen(3000);
 ```
@@ -40,4 +40,4 @@ Express middleware for logentries webhook api, written in typescript with types 
 
 ## Environment Variables
 
-`ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING` : Enable logging from this middleware. For local development only, as this could log sensitive data.
+`ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING` : Enable logging from this middleware. This will log hashes and signatures, don't enable this in production.
