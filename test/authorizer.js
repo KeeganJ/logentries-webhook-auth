@@ -21,10 +21,8 @@ describe('LogentriesWebhookAuthExpress', function() {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
             'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
-            authorization: 'LE greenish-yellow:+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
-          },
-          body: {
-            payload: 'abcdeft'
+            'Authorization': 'LE greenish-yellow:ss+KTRKKG2PwvWl89ceopxhEzSc=',
+            'Content-Md5': 'A4O7taYfMqO/3vugWHFriA=='
           },
           path: '/somewhere'
         };
@@ -36,7 +34,7 @@ describe('LogentriesWebhookAuthExpress', function() {
       it('should set logentriesWebhookAuth on the request', function() {
         return expect(this.request.logentriesWebhookAuth).to.deep.equal({
           user: 'greenish-yellow',
-          hash: '+x/QCSqyGmY0XmxQ5tq8qUWGGDc='
+          hash: 'ss+KTRKKG2PwvWl89ceopxhEzSc='
         });
       });
     });
@@ -52,10 +50,8 @@ describe('LogentriesWebhookAuthExpress', function() {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
             'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
-            authorization: 'LE super-pink:uHvt/OOVkCqV58aFIDaPNsHZRtg='
-          },
-          body: {
-            payload: 'fobar'
+            'Authorization': 'LE super-pink:J0Kxo+zCk9uvqrouBMY45gRkiO4=',
+            'Content-Md5': 'A4O7taYfMqO/3vugWHFriA=='
           },
           path: '/b0rked'
         };
@@ -67,7 +63,7 @@ describe('LogentriesWebhookAuthExpress', function() {
       it('should set logentriesWebhookAuth on the request', function() {
         expect(this.request.logentriesWebhookAuth).to.deep.equal({
           user: 'super-pink',
-          hash: 'uHvt/OOVkCqV58aFIDaPNsHZRtg='
+          hash: 'J0Kxo+zCk9uvqrouBMY45gRkiO4='
         });
       });
     });
@@ -83,10 +79,8 @@ describe('LogentriesWebhookAuthExpress', function() {
             'Content-Type': 'application/x-www-form-urlencoded',
             'Date': 'Tue, 18 Aug 2015 18:14:29 GMT',
             'X-Le-Nonce': 'kzaWhO5P5yHYkUZRhbTDNEkG',
-            authorization: 'LE user:zpwaW5raXNoLBAD'
-          },
-          body: {
-            payload: 'totally haxxored'
+            'Authorization': 'LE user:zpwaW5raXNoLBAD',
+            'Content-Md5': 'A4O7taYfMqO/3vugWHFriA=='
           },
           path: '/supersecretpasswords'
         };

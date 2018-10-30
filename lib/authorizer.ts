@@ -21,9 +21,10 @@ export class Authorizer {
   getFromAuthorizationHeader(request: ExpressRequest) {
     if (request.headers == null) return;
 
-    debugLog('Authorization', request.headers.authorization);
-    const parts = request.headers.authorization !== null
-      ? request.headers.authorization.split(' ')
+    const auth = request.get('Authorization');
+    debugLog('Authorization header', auth);
+    const parts = auth !== null
+      ? auth.split(' ')
       : undefined;
 
     if (
@@ -51,29 +52,11 @@ export class Authorizer {
 
   _checkHash(request: ExpressRequest, hash: string) {
     debugLog('this.options', inspect(this.options));
-    debugLog('request[this.options.bodyParam]', inspect(request[this.options.bodyParam]));
-
-    const bodyFromParam = request[this.options.bodyParam];
-    if (!bodyFromParam) {
-      throw new Error(`Error: bodyParam '${this.options.bodyParam} is '${bodyFromParam}', which can't be parsed`);
-    }
-
-    const bodyToEncode = request[this.options.bodyParam].payload;
-    if (bodyToEncode === undefined || bodyToEncode === null) {
-      throw new Error(`Error: No payload property on the body object.`);
-    }
-
-    debugLog('bodyToEncode', inspect(bodyToEncode));
-
-    const bodyHash = crypto.createHash('md5');
-    bodyHash.update(bodyToEncode);
-    const content_md5 = bodyHash.digest('base64');
-    debugLog('content_md5', content_md5);
 
     const canonical = [
       'POST',
       request.get('Content-Type'),
-      content_md5,
+      request.get('Content-Md5'),
       request.get('Date'),
       request.path,
       request.get('X-Le-Nonce')
@@ -84,9 +67,11 @@ export class Authorizer {
     const hmac = crypto.createHmac('sha1', this.options.password);
     hmac.update(canonical)
     const signature = hmac.digest('base64');
-    debugLog('signature', signature);
 
+    debugLog('signature', signature);
+    debugLog('hash', hash);
     debugLog('signature === hash', signature === hash);
+
     return signature === hash;
   }
 }
