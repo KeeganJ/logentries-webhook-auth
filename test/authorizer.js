@@ -24,7 +24,7 @@ describe('LogentriesWebhookAuthExpress', function() {
             'Authorization': 'LE greenish-yellow:ss+KTRKKG2PwvWl89ceopxhEzSc=',
             'Content-Md5': 'A4O7taYfMqO/3vugWHFriA=='
           },
-          path: '/somewhere'
+          originalUrl: '/somewhere'
         };
 
         this.request.get = this.makeFakeGet(this.request);
@@ -53,7 +53,7 @@ describe('LogentriesWebhookAuthExpress', function() {
             'Authorization': 'LE super-pink:J0Kxo+zCk9uvqrouBMY45gRkiO4=',
             'Content-Md5': 'A4O7taYfMqO/3vugWHFriA=='
           },
-          path: '/b0rked'
+          originalUrl: '/b0rked'
         };
 
         this.request.get = this.makeFakeGet(this.request);
@@ -82,7 +82,7 @@ describe('LogentriesWebhookAuthExpress', function() {
             'Authorization': 'LE user:zpwaW5raXNoLBAD',
             'Content-Md5': 'A4O7taYfMqO/3vugWHFriA=='
           },
-          path: '/supersecretpasswords'
+          originalUrl: '/supersecretpasswords'
         };
 
         this.request.get = this.makeFakeGet(this.request);

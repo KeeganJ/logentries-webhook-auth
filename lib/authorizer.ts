@@ -56,7 +56,7 @@ export class Authorizer {
       request.get('Content-Type'),
       request.get('Content-Md5'),
       request.get('Date'),
-      request.path,
+      request.originalUrl,
       request.get('X-Le-Nonce')
     ].join("\n");
 
