@@ -1,0 +1,21 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "module": "commonjs",
+    "alwaysStrict": true,
+    "noErrorTruncation": true,
+    "noImplicitAny": false,
+    "noUnusedLocals": true,
+    "preserveConstEnums": true,
+    "pretty": true,
+    "removeComments": false,
+    "inlineSourceMap": true,
+    "inlineSources": true,
+    "target": "es6",
+    "outDir": "build",
+    "declaration": true
+  },
+  "include": [
+    "./lib/**/*"
+  ]
+}
