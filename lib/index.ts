@@ -5,8 +5,8 @@ export default function(password: string) {
   const authorizer = new Authorizer(password);
 
   const middleware = function(request: ExpressRequest, response: any, next) {
-    authorizer.getFromAuthorizationHeader(request);
-    const auth = request.logentriesWebhookAuth;
+    const auth = authorizer.getAuthData(request);
+    request.logentriesWebhookAuth = auth;
 
     if (!auth || !auth.user) {
       return response.status(401).end();

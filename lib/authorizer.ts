@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { ExpressRequest } from './interfaces';
+import { ExpressRequest, AuthData } from './interfaces';
 
 const debugLog = process.env.ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING
   ? console.log
@@ -13,8 +13,8 @@ export class Authorizer {
     this.password = password;
   }
 
-  getFromAuthorizationHeader(request: ExpressRequest) {
-    if (request.headers == null) return;
+  getAuthData(request: ExpressRequest): AuthData {
+    if (request.headers == null) return null;
 
     const auth = request.get('Authorization');
     debugLog('Authorization header', auth);
@@ -30,19 +30,20 @@ export class Authorizer {
           : undefined
         ) !== 'LE')
     ) {
-      return;
+      return null;
     }
 
     const [user, hash] = parts[1].split(':');
 
-    if (!this._checkHash(request, hash)) { return; }
+    if (!this._checkHash(request, hash)) { return null; }
 
-    if (request.logentriesWebhookAuth == null) {
-       request.logentriesWebhookAuth = {};
-    }
+    const authData: AuthData = {
+      user: user.trim(),
+      hash
+    };
 
-    request.logentriesWebhookAuth.user = user.trim();
-    return request.logentriesWebhookAuth.hash = hash;
+    debugLog(authData);
+    return authData;
   }
 
   _checkHash(request: ExpressRequest, hash: string) {
