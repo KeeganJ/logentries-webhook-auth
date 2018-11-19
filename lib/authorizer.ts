@@ -8,14 +8,9 @@ const debugLog = process.env.ENABLE_LOGENTRIES_WEBHOOK_AUTH_LOGGING
 export class Authorizer {
   password: string;
 
-  constructor(password: string, dependencies?: any) {
-    this.getFromAuthorizationHeader = this.getFromAuthorizationHeader.bind(this);
-    this._checkHash = this._checkHash.bind(this);
-
+  constructor(password: string) {
     if (!password) throw new Error(`'password' is required for logentries webhook auth.`);
     this.password = password;
-
-    if (dependencies == null) { dependencies = {}; }
   }
 
   getFromAuthorizationHeader(request: ExpressRequest) {
