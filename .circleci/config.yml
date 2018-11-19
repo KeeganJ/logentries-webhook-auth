@@ -33,7 +33,7 @@ jobs:
           <<: *package-cache
           paths:
             - node_modules
-      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/repo/.npmrc
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
       - run: npm run build
       - run: npm publish
 
