@@ -1,10 +1,10 @@
 import { Request } from 'express';
 
 export interface ExpressRequest extends Request {
-  logentriesWebhookAuth?: LogentriesWebhookAuth
+  logentriesWebhookAuth?: AuthData
 }
 
-export interface LogentriesWebhookAuth {
+export interface AuthData {
   user?: string,
   hash?: string
 }

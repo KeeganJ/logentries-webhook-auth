@@ -2,7 +2,7 @@ const Authorizer = require('../build/authorizer').Authorizer;
 
 describe('LogentriesWebhookAuthExpress', function() {
 
-  describe('->getFromAuthorizationHeader', function() {
+  describe('->getAuthData', function() {
 
     beforeEach(function() {
       return this.makeFakeGet = request => {
@@ -11,6 +11,8 @@ describe('LogentriesWebhookAuthExpress', function() {
     });
 
     describe('with a valid LE token', function() {
+
+      let response;
 
       beforeEach(function() {
         this.sut = new Authorizer('pre-shared-key');
@@ -28,11 +30,11 @@ describe('LogentriesWebhookAuthExpress', function() {
         };
 
         this.request.get = this.makeFakeGet(this.request);
-        return this.sut.getFromAuthorizationHeader(this.request);
+        response = this.sut.getAuthData(this.request);
       });
 
       it('should set logentriesWebhookAuth on the request', function() {
-        return expect(this.request.logentriesWebhookAuth).to.deep.equal({
+        return expect(response).to.deep.equal({
           user: 'greenish-yellow',
           hash: 'ss+KTRKKG2PwvWl89ceopxhEzSc='
         });
@@ -40,6 +42,8 @@ describe('LogentriesWebhookAuthExpress', function() {
     });
 
     describe('with a different valid LE token', function() {
+
+      let response;
 
       beforeEach(function() {
         this.sut = new Authorizer('shared-key-pre');
@@ -57,11 +61,11 @@ describe('LogentriesWebhookAuthExpress', function() {
         };
 
         this.request.get = this.makeFakeGet(this.request);
-        return this.sut.getFromAuthorizationHeader(this.request);
+        response = this.sut.getAuthData(this.request);
       });
 
       it('should set logentriesWebhookAuth on the request', function() {
-        expect(this.request.logentriesWebhookAuth).to.deep.equal({
+        expect(response).to.deep.equal({
           user: 'super-pink',
           hash: 'J0Kxo+zCk9uvqrouBMY45gRkiO4='
         });
@@ -69,6 +73,8 @@ describe('LogentriesWebhookAuthExpress', function() {
     });
 
     describe('with a invalid LE token', function() {
+
+      let response;
 
       beforeEach(function() {
         this.sut = new Authorizer('shared');
@@ -86,11 +92,11 @@ describe('LogentriesWebhookAuthExpress', function() {
         };
 
         this.request.get = this.makeFakeGet(this.request);
-        return this.sut.getFromAuthorizationHeader(this.request);
+        response = this.sut.getAuthData(this.request);
       });
 
       it('should set logentriesWebhookAuth on the request', function() {
-        expect(this.request.logentriesWebhookAuth).to.not.exist;
+        expect(response).to.not.exist;
       });
     });
   });
